@@ -1,0 +1,14 @@
+# Run logs (created by the script)
+Logs/
+*.log
+
+# Local CSV inputs (may contain customer device IDs)
+devices.csv
+*.local.csv
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/
+*.swp
