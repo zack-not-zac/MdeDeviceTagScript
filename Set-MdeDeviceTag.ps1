@@ -46,6 +46,31 @@
 
     Requires PowerShell 5.1+ and the MSAL.PS module:
         Install-Module MSAL.PS -Scope CurrentUser
+
+    -------------------------------------------------------------------------
+    IMPORTANT - Client ID (Application ID) used for sign-in
+    -------------------------------------------------------------------------
+    This script ships with a well-known Microsoft FIRST-PARTY public client
+    ID (Microsoft Office: d3590ed6-52b3-4102-aeff-aad2292ab01c) so that it
+    works out of the box without any app registration. This ID is public and
+    is NOT a secret.
+
+    For PRODUCTION use it is strongly recommended that you register your own
+    multi-tenant public-client app in Microsoft Entra ID and replace the
+    value of $script:ClientId below. Benefits:
+      * Sign-in / audit logs clearly attribute API calls to your app, not
+        to "Microsoft Office".
+      * You control which delegated permissions are granted and can revoke
+        consent independently.
+      * You can apply Conditional Access policies targeted at your app.
+
+    Required app configuration:
+      * Platform           : Mobile and desktop applications
+      * Redirect URI       : http://localhost
+      * Account types      : Accounts in this organizational directory only
+      * API permissions    : WindowsDefenderATP / Machine.ReadWrite.All
+                             (Delegated, admin consent granted)
+    -------------------------------------------------------------------------
 #>
 
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
@@ -76,10 +101,12 @@ $ErrorActionPreference = 'Stop'
 
 # --- Constants ---------------------------------------------------------------
 
-# Well-known first-party client ID for "Microsoft Mobile Application Management"
-# which is permitted as a public client for MDE delegated auth in samples.
-# Replace with your own multi-tenant app registration's client ID if you have
-# registered one (recommended for production traceability).
+# >>> CHANGE ME FOR PRODUCTION <<<
+# Default is the Microsoft Office first-party public client ID. It works
+# without any app registration but tags every API call as "Microsoft Office"
+# in your tenant's sign-in logs. Replace with your own app registration's
+# Application (client) ID for proper attribution and Conditional Access.
+# See the script header (.NOTES) for required app configuration.
 $script:ClientId    = 'd3590ed6-52b3-4102-aeff-aad2292ab01c'   # Microsoft Office (public client)
 $script:RedirectUri = 'http://localhost'
 $script:Resource    = 'https://api.securitycenter.microsoft.com'
