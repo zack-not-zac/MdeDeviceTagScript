@@ -252,12 +252,13 @@ try {
     }
 
     # De-duplicate and drop blanks up-front.
-    $machineIds = $rows |
+    $machineIds = @($rows |
         Select-Object -ExpandProperty machineId |
         Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
         ForEach-Object { $_.Trim() } |
         Select-Object -Unique
-
+    )
+    
     Write-Log -Message ("Devices to tag: {0} (after de-duplication)" -f $machineIds.Count)
 
     if ($machineIds.Count -eq 0) {
